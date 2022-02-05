@@ -20,7 +20,7 @@ param (
 # Catch any NSG failures if there are no NSGs on the network resource
 trap {
     if ($_ -like "*empty*" ) {
-        Write-Host "Did not detect an NSG at the $($devices[-1]) level"
+        Write-Output "Did not detect an NSG at the $($devices[-1]) level"
         continue 
     }
 }
@@ -75,7 +75,7 @@ $ruleName = "Allow My Access"
 for ($i = 0; $i -lt $NSGArray.Count; $i++) {
     while ($true) {
         try { 
-            Write-Host "Creating rule $($ruleName) allowing port $($portNumber) on $($devices[$i]) at priority $($priority)"       
+            Write-Output "Creating rule $($ruleName) allowing port $($portNumber) on $($devices[$i]) at priority $($priority)"       
             Get-AzNetworkSecurityGroup -Name $NSGArray[$i] -ResourceGroupName $rgName | Add-AzNetworkSecurityRuleConfig -Name $ruleName -Description "$($ruleName) via PowerShell" -Access "Allow" -Protocol "Tcp" -Direction "Inbound" -Priority $priority -SourceAddressPrefix $myipaddress -SourcePortRange "*" -DestinationAddressPrefix "*" -DestinationPortRange $portNumber -ErrorAction Stop | Set-AzNetworkSecurityGroup -ErrorAction Stop
             break
         }
